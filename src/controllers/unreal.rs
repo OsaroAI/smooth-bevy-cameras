@@ -48,7 +48,7 @@ pub struct UnrealCameraBundle {
 impl UnrealCameraBundle {
     pub fn new(controller: UnrealCameraController, eye: Vec3, target: Vec3) -> Self {
         // Make sure the transform is consistent with the controller to start.
-        let transform = Transform::from_translation(eye).looking_at(target, Vec3::Y);
+        let transform = Transform::from_translation(eye).looking_at(target, Vec3::Z);
 
         Self {
             controller,
@@ -251,16 +251,21 @@ pub fn control_system(
                 transform.eye += delta.y * look_vector;
             }
             ControlEvent::Rotate(delta) => {
-                // Rotates with pitch and yaw.
-                look_angles.add_yaw(-delta.x);
-                look_angles.add_pitch(-delta.y);
+                // Rotates with pitch and yaw with mouse.
+                look_angles.add_yaw(delta.y);
+                look_angles.add_pitch(-delta.x);
             }
             ControlEvent::TranslateEye(delta) => {
-                let yaw_rot = Quat::from_axis_angle(Vec3::Y, look_angles.get_yaw());
+                /*
+                QEAD keys
+                QE: up/down
+                AD: left/right
+                */
+                let yaw_rot = Quat::from_axis_angle(Vec3::Z, look_angles.get_yaw());
                 let rot_x = yaw_rot * Vec3::X;
 
                 // Translates up/down (Y) and left/right (X).
-                transform.eye -= delta.x * rot_x - Vec3::new(0.0, delta.y, 0.0);
+                transform.eye -= delta.x * rot_x - Vec3::new(0.0, 0.0, delta.y);
             }
         }
     }

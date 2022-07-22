@@ -52,7 +52,7 @@ fn eye_look_at_target_transform(eye: Vec3, target: Vec3) -> Transform {
     let look_vector = (target - eye).normalize();
     let look_at = eye + look_vector;
 
-    Transform::from_translation(eye).looking_at(look_at, Vec3::Y)
+    Transform::from_translation(eye).looking_at(look_at, Vec3::Z)
 }
 
 /// Preforms exponential smoothing on a `LookTransform`. Set the `lag_weight` between `0.0` and `1.0`, where higher is smoother.
